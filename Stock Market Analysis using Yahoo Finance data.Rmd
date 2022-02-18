@@ -1,0 +1,102 @@
+---
+title: "Stock Market Analysis"
+author: "Joshua Omondi"
+date: "2/18/2022"
+output: html_document
+---
+## This is a practice project. Getting to learn about RMarkdown. Inspiration is from Ghetto Counselor(https://rpubs.com/markloessi).
+
+```{r setup, include=FALSE}
+library(quantmod)
+```
+
+
+```{r cars}
+symbolBasket <- c('AAPL', 'AMZN', 'NFLX', 'SPY')
+getSymbols(symbolBasket , src='yahoo')
+```
+
+## Obtaining summary for Netflix (NFLX)
+
+
+```{r pressure, echo=FALSE}
+summary(`NFLX`)
+```
+## Data Preparation
+```{r}
+NFLX <- as.xts(`NFLX`)
+names(NFLX)
+```
+
+```{r}
+names(NFLX) <- c("NFLX.Open"   ,  "NFLX.High"   ,  "NFLX.Low"   ,   "NFLX.Close"  ,  "NFLX.Volume",  "NFLX.Adjusted")
+names(NFLX)
+```
+## Plotting Charts
+
+```{r}
+plot(NFLX$NFLX.Open)
+```
+
+## Using barchart to plot
+```{r}
+barChart(NFLX, bar.type = 'hlc', TA = NULL)
+```
+
+## Candle Sticks Plot
+```{r}
+candleChart(NFLX, TA=NULL, subset = '2021')
+```
+
+## Stock prices started dropping towards the end of the year. This might be a response to people starting to go back to offices. NFLX is considered a stay-at-home stock.
+
+```{r}
+candleChart(NFLX, TA=c(addMACD(),addVo()), subset = '2021')
+```
+## The above chart shows the moving average convergence divergence (MACD).
+
+```{r}
+candleChart(NFLX , TA=c(addMACD()), subset = '2021-11::2022-02', theme = 'white')
+```
+## The stock has been on a decline, dropping closely to 50% since November 2021.
+
+```{r}
+chartSeries(NFLX, 
+            type = c("auto", "candlesticks"), 
+            subset = '2021-01::',
+            show.grid = TRUE,
+            major.ticks='auto', minor.ticks=TRUE,
+            TA=c(addMACD(),addVo()))
+```
+
+```{r}
+chartSeries(NFLX, 
+            type = c("auto", "candlesticks"), 
+            subset = '2020-01::',
+            show.grid = TRUE,
+            major.ticks='auto', minor.ticks=TRUE,
+            multi.col = TRUE,
+            TA=c(addMACD(),addVo()))
+```
+
+```{r}
+chartSeries(NFLX, 
+            type = c("auto", "candlesticks"), 
+            subset = '2021-09::',
+            show.grid = TRUE,
+            major.ticks='auto', minor.ticks=TRUE,
+            multi.col = TRUE,
+            TA=c(addMACD(),addVo()))
+```
+
+```{r}
+chartSeries(NFLX, 
+            type = c("auto", "matchsticks"), 
+            subset = '2020-01::',
+            show.grid = TRUE,
+            major.ticks='auto', minor.ticks=TRUE,
+            multi.col = FALSE,
+            TA=c(addMACD(),addVo(),addSMA(n=200,col = 'blue'),addSMA(n=50,col = 'red'),addSMA(n=22,col = 'green'),
+            addROC(n=200,col = 'blue'),addROC(n=50,col = 'red'),addROC(n=22,col = 'green'))) # rate of change
+```
+
